@@ -205,15 +205,7 @@ services:
     networks:
       - default
       - web
-    labels:
-      - "coolify.deployment.network=web"
-      - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`${APP_API_URL}`)"
-      - "traefik.http.routers.api.entrypoints=web"
-      - "traefik.http.routers.api.middlewares=redirect-to-https@file"
-      - "traefik.http.routers.api-secure.rule=Host(`${APP_API_URL}`)"
-      - "traefik.http.routers.api-secure.entrypoints=websecure"
-      - "traefik.http.routers.api-secure.tls.certresolver=letsencrypt"  
+    
       
 
   # worker service
@@ -234,6 +226,7 @@ services:
       - ./volumes/app/storage:/app/api/storage
     networks:
       - default
+      - web_network
 
   # Frontend web application.
   web:
@@ -244,17 +237,8 @@ services:
       APP_API_URL: ${APP_API_URL:-}
       SENTRY_DSN: ${WEB_SENTRY_DSN:-}
       NEXT_TELEMETRY_DISABLED: ${NEXT_TELEMETRY_DISABLED:-0}
-    labels:
-      - "coolify.deployment.network=web"
-      - "traefik.enable=true"
-      - "traefik.http.routers.web.rule=Host(`${APP_WEB_URL}`)"
-      - "traefik.http.routers.web.entrypoints=web"
-      - "traefik.http.routers.web.middlewares=redirect-to-https@file"
-      - "traefik.http.routers.web-secure.rule=Host(`${APP_WEB_URL}`)"
-      - "traefik.http.routers.web-secure.entrypoints=websecure"
-      - "traefik.http.routers.web-secure.tls.certresolver=letsencrypt"  
     networks:
-      - web
+      - web_network
     
 
   # The postgres database.
@@ -608,7 +592,7 @@ networks:
   opensearch-net:
     driver: bridge
     internal: true
-  web:
+  web_network:
     external: true
 
 volumes:
