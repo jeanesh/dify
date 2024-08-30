@@ -204,6 +204,7 @@ services:
       - ./volumes/app/storage:/app/api/storage
     networks:
       - default
+      - web
     labels:
       - "coolify.deployment.network=web"
       - "traefik.enable=true"
@@ -252,6 +253,8 @@ services:
       - "traefik.http.routers.web-secure.rule=Host(`${APP_WEB_URL}`)"
       - "traefik.http.routers.web-secure.entrypoints=websecure"
       - "traefik.http.routers.web-secure.tls.certresolver=letsencrypt"  
+    networks:
+      - web
     
 
   # The postgres database.
