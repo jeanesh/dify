@@ -204,7 +204,7 @@ services:
       - ./volumes/app/storage:/app/api/storage
     networks:
       - default
-      - web
+      - web_network
     
       
 
