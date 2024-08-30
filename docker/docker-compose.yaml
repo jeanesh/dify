@@ -246,7 +246,7 @@ services:
       APP_API_URL: ${APP_API_URL:-}
       SENTRY_DSN: ${WEB_SENTRY_DSN:-}
       NEXT_TELEMETRY_DISABLED: ${NEXT_TELEMETRY_DISABLED:-0}
-   labels:
+    labels:
       - "coolify.deployment.network=web"
       - "traefik.enable=true"
       - "traefik.http.routers.web.rule=Host(`${APP_WEB_URL}`)"
@@ -254,7 +254,8 @@ services:
       - "traefik.http.routers.web.middlewares=redirect-to-https@file"
       - "traefik.http.routers.web-secure.rule=Host(`${APP_WEB_URL}`)"
       - "traefik.http.routers.web-secure.entrypoints=websecure"
-      - "traefik.http.routers.web-secure.tls.certresolver=letsencrypt"   
+      - "traefik.http.routers.web-secure.tls.certresolver=letsencrypt"  
+    
 
   # The postgres database.
   db:
