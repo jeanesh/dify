@@ -605,6 +605,8 @@ networks:
   opensearch-net:
     driver: bridge
     internal: true
+  web:
+    external: true
 
 volumes:
   oradata:
