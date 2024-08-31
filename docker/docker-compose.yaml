@@ -192,19 +192,21 @@ services:
     image: langgenius/dify-api:0.7.2
     restart: always
     environment:
-      # Use the shared environment variables.
       <<: *shared-api-worker-env
-      # Startup mode, 'api' starts the API server.
       MODE: api
     depends_on:
       - db
       - redis
     volumes:
-      # Mount the storage directory to the container, for storing user files.
       - ./volumes/app/storage:/app/api/storage
     networks:
+      - ssrf_proxy_network
       - default
-      - web_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dify-api.rule=Host(`${SERVICE_API_URL:-api.dify.jenzio.com}`)"
+      - "traefik.http.services.dify-api.loadbalancer.server.port=5001"
+      
     
       
 
@@ -237,8 +239,10 @@ services:
       APP_API_URL: ${APP_API_URL:-}
       SENTRY_DSN: ${WEB_SENTRY_DSN:-}
       NEXT_TELEMETRY_DISABLED: ${NEXT_TELEMETRY_DISABLED:-0}
-    networks:
-      - web_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dify-web.rule=Host(`${APP_WEB_URL:-dify.jenzio.com}`)"
+      - "traefik.http.services.dify-web.loadbalancer.server.port=3000"
     
 
   # The postgres database.
@@ -592,8 +596,9 @@ networks:
   opensearch-net:
     driver: bridge
     internal: true
-  web_network:
+  default:
     external: true
+    name: traefik_network  
 
 volumes:
   oradata:
